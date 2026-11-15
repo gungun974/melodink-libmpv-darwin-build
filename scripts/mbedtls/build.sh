@@ -22,6 +22,8 @@ cp -R subprojects/mbedtls/include/mbedtls/*.h dist/include/mbedtls
 cp -R subprojects/mbedtls/include/psa/*.h dist/include/psa
 ## install libs
 find . -type f -name '*.dylib' -exec sh -c 'mv {} dist/lib' \;
+## newer CMake only emits versioned dylibs as real files; add unversioned links for -lmbedtls etc.
+(cd dist/lib && for f in lib*.[0-9]*.dylib; do ln -sf "$f" "${f%%.[0-9]*.dylib}.dylib"; done)
 ## install pkgconfig file
 cp ${PROJECT_DIR}/scripts/mbedtls/mbedtls.pc.in dist/lib/pkgconfig/mbedtls.pc
 sed -i '' 's|${PREFIX}|'${OUTPUT_DIR}'|g' dist/lib/pkgconfig/mbedtls.pc
