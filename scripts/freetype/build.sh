@@ -14,5 +14,7 @@ meson setup build \
     -Dpng=enabled \
     -Dtests=disabled \
     -Dzlib=enabled
+# libpng < 1.6.44 wrongly includes <fp.h> on newer Apple SDKs (fixed upstream by dropping TARGET_OS_MAC)
+for f in subprojects/libpng-*/pngpriv.h; do [ -f "$f" ] && sed -i "" "s/ || defined(TARGET_OS_MAC)//" "$f"; done
 meson compile -C build
 meson install -C build

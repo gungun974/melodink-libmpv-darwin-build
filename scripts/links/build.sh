@@ -18,3 +18,12 @@ for BINARY in ${BINARIES}; do
         ln -s $(which $BINARY) ${OUTPUT_DIR}/bin/$BINARY ||
         true
 done
+
+# CMake 4 refuses projects declaring cmake_minimum_required < 3.5 (uchardet,
+# mbedtls, ...). The build runs under `env -i`, so wrap cmake to set the policy.
+if [ -h ${OUTPUT_DIR}/bin/cmake ]; then
+    CMAKE_BIN=$(readlink ${OUTPUT_DIR}/bin/cmake)
+    rm ${OUTPUT_DIR}/bin/cmake
+    printf '#!/bin/sh\nexport CMAKE_POLICY_VERSION_MINIMUM=3.5\nexec "%s" "$@"\n' "${CMAKE_BIN}" >${OUTPUT_DIR}/bin/cmake
+    chmod +x ${OUTPUT_DIR}/bin/cmake
+fi

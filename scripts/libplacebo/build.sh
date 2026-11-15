@@ -18,10 +18,13 @@ tar -xzvf "${DOWNLOADS_DIR}/jinja-3.1.2.tar.gz" -C ./3rdparty/
 mv ./3rdparty/jinja-3.1.2 ./3rdparty/jinja
 
 tar -xzvf "${DOWNLOADS_DIR}/markupsafe-2.1.2.tar.gz" -C ./3rdparty/
-mv ./3rdparty/markupsafe-2.1.2 ./3rdparty/markupsafe
+mv ./3rdparty/MarkupSafe-2.1.2 ./3rdparty/markupsafe
 
 tar -xzvf "${DOWNLOADS_DIR}/Vulkan-Headers-1.3.243.tar.gz" -C ./3rdparty/
 mv ./3rdparty/Vulkan-Headers-1.3.243 ./3rdparty/Vulkan-Headers
+
+# Python 3.14 ElementTree() no longer accepts an ElementTree as its root element
+sed -i "" "s/VkXML(ET.parse(xmlfile))/VkXML(ET.parse(xmlfile).getroot())/" src/vulkan/utils_gen.py
 
 meson setup build \
     --cross-file ${PROJECT_DIR}/cross-files/${OS}-${ARCH}.ini \
